@@ -1,0 +1,57 @@
+## Strategy
+
+Strategy summary (what, how, strong / weak points — detailed)
+
+The bot is a passive arbitrage / micro market-making agent that scans Polymarket CLOB markets for persistent >X cent spreads between the best bid and best ask, places limit orders on the side(s) that are most likely to fill, and then closes the position by taking the opposite side when a profitable cross appears. The flow: continuously ingest orderbook & market metadata (via Gamma / CLOB data endpoints and websockets), filter markets by spread / size / expiry / recent volume, construct limit orders sized to the target risk per trade, place orders (signed via CLOB order protocol), monitor fills via websockets/data API, and either take profit with marketable sell or cancel and withdraw if the market moves against target or expires.
+
+Strengths: low capital requirement per trade, frequent small wins, simple logic (buy low, sell slightly higher), uses on-chain custody + authenticated API so execution is auditable. Works best on moderately liquid markets with stale human liquidity.
+
+Weaknesses / risks: latency and API delays can make small spreads vanish (you need low latency to compete with bots), maker/taker fees and gas/token allowance friction reduce edge, “stuck” inventory if market moves strongly (inventory risk), rate limits / L2 auth complexity, and possible front-running by faster actors. Also not massively scalable because large order sizes will move the book.
+
+Detailed how-to (practical): pick target markets (expiry > 3 days ideally), monitor real-time orderbook snapshots + trade ticks, require both minimum spread (e.g., ≥ $0.03) and sufficient resting depth at best quotes to absorb your order size, place an aggressive resting limit order slightly inside the spread (or on the existing best bid/ask if you want immediate fill probability), set a maximum time-to-live per order (e.g., 30–180s), set automatic cancel on adverse price movement or on partial fill thresholds, and when filled either place a marketable opposing order to exit (if profit preserved after fees) or place a limit sell at target price; log everything and run a simulator/backtest before live. Use batching for low-latency multi-order placement where supported.
+
+
+## Polymarket documentation
+
+- **General API / developer overview**: https://docs.polymarket.com/developers
+- **Gamma-Markets (public market data)**: https://gamma-api.polymarket.com
+- **Gamma-Markets API reference** (e.g. GET /markets, GET /events): https://docs.polymarket.com/api-reference/markets/get-market-by-id
+- **CLOB (order book / trading) API documentation & introduction**: https://docs.polymarket.com/developers/CLOB/introduction
+- **Data-API (trades, activity, historical data, read-only)**: https://data-api.polymarket.com/
+
+
+## Needed: resources / infra / permissions / metrics
+
+### Accounts & keys
+
+- **Polygon wallet(s)**: EOA or managed, with funds on Polygon (MATIC + stable/USDC if required by Polymarket).
+- **Polymarket CLOB API credentials**: L1 access to derive API keys, then L2 headers (`POLY_API_KEY`, `POLY_PASSPHRASE`, `POLY_ADDRESS`, `POLY_SIGNATURE`, `POLY_TIMESTAMP`).
+- **Private key management**: secure HSM or vault for production.
+
+### Libraries / SDKs
+
+- **Official clients**: `py-clob-client` (Python) or `polymarket/clob-client` (TypeScript) for building/sending signed orders and for batching.
+- **Websocket client libs** for the CLOB WSS channel.
+- **HTTP client** with retry & backoff (`requests` / `axios`).
+
+### Infrastructure
+
+- **Low-latency compute**: cloud VM in a region with good connectivity to Polymarket infra.
+- **Orderbook state**: lightweight in-memory orderbook cache (Redis or in-process state) + persistent DB (e.g., Postgres) for audit & metrics.
+- **Monitoring & alerting**: Prometheus / Grafana + logs / Sentry.
+- **Backtest / simulation engine**: use historical trade data (Data-API) and synthetic orderbook replay.
+
+### Operational
+
+- **Rate-limit budget**: understanding & enforcement, with concurrency controls.
+- **Fee model calculator**: maker/taker, settlement costs, token allowances.
+- **Risk parameters**: per-trade max exposure, max concurrent markets, max total inventory, max age of resting order.
+- **Testing environment**: staging/sandbox keys or tiny real capital.
+- **Token allowances management**: approve tokens if using EOA.
+
+### Data feeds
+
+- **Gamma API / Data API** for market metadata and historical trades.
+- **CLOB REST** for snapshots and order operations.
+- **CLOB WebSocket** for orderbook deltas and fill events.
+
