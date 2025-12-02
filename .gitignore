@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Environment / secrets
+.env
+.env.*
+*.env
+*.key
+*.pem
+
+# Python tooling
+.mypy_cache/
+pytest_cache/
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Cursor / editor metadata (keep .cursor if you want rules tracked)
+.cursor/workspace/
+.cursor/history/
+
+# Local notes and private plans
+@Boio/
+

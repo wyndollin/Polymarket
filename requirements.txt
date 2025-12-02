@@ -1,0 +1,13 @@
+# Core runtime
+requests>=2.32.0
+websockets>=12.0
+pydantic>=2.8.0
+python-dotenv>=1.0.1
+
+# Polymarket / CLOB client
+py-clob-client>=0.1.0
+
+# Optional: database & metrics (to be finalized later)
+psycopg2-binary>=2.9.9
+SQLAlchemy>=2.0.35
+prometheus-client>=0.20.0
