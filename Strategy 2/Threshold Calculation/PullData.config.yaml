@@ -1,0 +1,37 @@
+# Config for Strategy 2/Threshold Calculation/PullData.py
+# CLI flags always override these values when both are provided.
+#
+# mode:
+#   - "sports": discover many Valorant markets via the Valorant sports tag.
+#   - "event" : pull a single Valorant match by its event_slug (from the URL).
+mode: "sports"
+
+# event_slug:
+#   Only used when mode == "event".
+#   Paste the slug from a Valorant event URL, e.g. "val-rrq1-geng-2025-12-03".
+event_slug: null
+
+# start_date / end_date:
+#   Inclusive date range on the match's gameStartTime/startDate (UTC), in "YYYY-MM-DD".
+#   Use null to leave a bound open (no lower/upper limit).
+start_date: "2025-01-01"
+end_date: "2025-12-31"
+
+# closed_only:
+#   - true: restrict to closed (resolved) markets and enrich the CSV with
+#           team_a_name, team_b_name, winner_side, winner_team_name.
+#   - false: include open markets and output only price time series.
+closed_only: true
+
+# interval:
+#   Price history interval passed to /prices-history.
+#   Common values: "1m", "5m", "1h", "1d".
+interval: "1m"
+
+# output:
+#   Base path for the raw CSV.
+#   If closed_only is true, an enriched file "<output>_enriched.csv"
+#   will also be created next to it.
+output: "Strategy 2/Threshold Calculation/Pulled Data/valorant_pipeline_range.csv"
+
+
