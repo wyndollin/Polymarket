@@ -11,3 +11,8 @@ py-clob-client>=0.1.0
 psycopg2-binary>=2.9.9
 SQLAlchemy>=2.0.35
 prometheus-client>=0.20.0
+
+# Analysis / research (Valorant threshold study)
+pandas>=2.2.0
+numpy>=1.26.0
+statsmodels>=0.14.0
