@@ -1,0 +1,63 @@
+# Valorant Straddle Bot Configuration
+
+# Exchange API Configuration
+exchange:
+  api_key: "${POLY_API_KEY}"
+  api_secret: "${POLY_API_SECRET}"
+  passphrase: "${POLY_API_PASSPHRASE}"
+  base_url: "https://clob.polymarket.com"
+  websocket_url: "wss://ws-subscriptions-clob.polymarket.com/ws/"
+  gamma_url: "https://gamma-api.polymarket.com"
+  rate_limit_delay: 0.1  # seconds between API calls
+
+# Strategy Configuration
+strategy:
+  entry:
+    price_tolerance: 0.05  # Both sides must be within 0.45-0.55
+    min_market_age_seconds: 300  # Avoid entering too early
+  
+  exit:
+    threshold: 0.18  # Single threshold: sell 100% of cheap side when price <= 0.18
+  
+  position_sizing:
+    position_size_pct: 0.03  # 3% of bankroll per trade
+    max_concurrent_positions: 5
+  
+  market_filtering:
+    valorant_tags:
+      - "valorant"
+      - "esports"
+
+# Risk Management
+risk:
+  position_sizing:
+    max_position_pct: 0.03  # 3% of bankroll per trade
+    min_position_size: 10  # USD minimum
+    max_position_size: 100  # USD maximum
+  
+  exposure:
+    max_concurrent_positions: 5
+    max_total_exposure_pct: 0.20  # 20% of bankroll
+  
+  safety:
+    stop_loss_pct: 0.20  # Pause if drawdown > 20%
+    min_bankroll: 100  # USD minimum to continue trading
+
+# Database Configuration
+database:
+  path: "data/bot.db"
+  backup_interval: 3600  # seconds
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  file: "logs/bot.log"
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+
+# Monitoring Configuration
+monitoring:
+  polling_interval: 5  # seconds for market scanner
+  price_update_interval: 1  # seconds for orderbook engine
+  health_check_interval: 60  # seconds
+

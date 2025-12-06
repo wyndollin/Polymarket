@@ -332,15 +332,31 @@ def build_match_timeseries(
     df_a = fetch_price_history_for_token(token_a, interval=interval)
     df_b = fetch_price_history_for_token(token_b, interval=interval)
 
-    if df_a.empty or df_b.empty:
+    # Case 1: no history at all -> skip market.
+    if df_a.empty and df_b.empty:
         if verbose:
-            print(f"  Skipping market {market.id}: missing history for one side.")
+            print(f"  Skipping market {market.id}: no history for either side.")
         return None
 
-    df_a = df_a.rename(columns={"price": "price_team_a"})
-    df_b = df_b.rename(columns={"price": "price_team_b"})
+    # Case 2: both sides have history -> use them as-is.
+    if not df_a.empty and not df_b.empty:
+        df_a = df_a.rename(columns={"price": "price_team_a"})
+        df_b = df_b.rename(columns={"price": "price_team_b"})
+        merged = pd.merge(df_a, df_b, on="ts", how="outer").sort_values("ts")
+    else:
+        # Case 3: exactly one side has history. Treat that as the traded leg and
+        # infer the other side as 1 - p (binary 2-outcome market assumption).
+        if not df_a.empty:
+            df_main = df_a.rename(columns={"price": "price_team_a"})
+            merged = df_main.copy()
+            merged["price_team_b"] = 1.0 - merged["price_team_a"]
+        else:
+            df_main = df_b.rename(columns={"price": "price_team_b"})
+            merged = df_main.copy()
+            merged["price_team_a"] = 1.0 - merged["price_team_b"]
 
-    merged = pd.merge(df_a, df_b, on="ts", how="outer").sort_values("ts")
+        merged = merged.sort_values("ts")
+
     merged["market_id"] = market.id
 
     # Forward-fill prices to align sparse points
