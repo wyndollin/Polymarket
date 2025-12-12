@@ -101,10 +101,10 @@ After selling the cheap side:
 Conceptually, your net result is:
 
 \[
-\text{Profit} = (\text{Payout or exit value of expensive side}) - (\text{Loss taken on cheap side})
+Profit = Payout or exit value of expensive side - Loss taken on cheap side
 \]
 
-The mathematical framework (Section 7) shows this is profitable when \( q > 1 - p_c + c \), where \( q \) is the favorite's win probability, \( p_c \) is the cheap side exit price, and \( c \) accounts for fees/slippage.
+The mathematical framework (Section 7) shows this is profitable when  q > 1 - p_c + c, where q is the favorite's win probability, p_c is the cheap side exit price, and c accounts for fees/slippage.
 
 ---
 
@@ -152,22 +152,22 @@ The profitability of this strategy depends on a precise mathematical relationshi
   - Cost NO = 0.5
   - Total cost = **1.0 unit**
 
-- **Exit**: At some point, one side becomes the **cheap side** at price \( p_c \) (e.g., 0.20).
-  - Sell the cheap side at \( p_c \)
+- **Exit**: At some point, one side becomes the **cheap side** at price p_c (e.g., 0.20).
+  - Sell the cheap side at p_c
   - Hold the **favorite** (opposite side) to resolution
 
 Define:
-- \( p_c \): price of the cheap side at exit (e.g., 0.20)
+- p_c: price of the cheap side at exit (e.g., 0.20)
 - "Favorite": the side opposite the cheap side
-- \( q \): \( \Pr(\text{favorite wins} \mid \text{cheap price} = p_c) \)
+- q: favorite wins / cheap price = p_c
 
 #### 7.2. Expected Value Formula
 
 At entry, you spend **1.0 unit**.
 
-When you sell the cheap side at price \( p_c \):
-- You receive \( p_c \) back
-- Your net capital "remaining at risk" is: \( 1 - p_c \)
+When you sell the cheap side at price p_c:
+- You receive p_c back
+- Your net capital "remaining at risk" is: 1 - p_c
 
 The remaining position (favorite) pays:
 - **1** if the favorite wins
@@ -175,14 +175,14 @@ The remaining position (favorite) pays:
 
 The **expected payoff** (ignoring fees and slippage) is:
 
-\[
-\text{EV} = q \cdot 1 + (1 - q) \cdot 0 - (1 - p_c) = q - (1 - p_c) = q + p_c - 1
-\]
+
+EV = q * 1 + (1 - q) * 0 - 1 - p_c = q - (1 - p_c) = q + p_c - 1
+
 
 The trade is **EV-positive** if:
 
 \[
-q + p_c - 1 > 0 \quad \Longleftrightarrow \quad q > 1 - p_c
+q + p_c - 1 > 0 -> q > 1 - p_c
 \]
 
 **Examples**:
